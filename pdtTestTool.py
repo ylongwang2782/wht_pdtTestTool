@@ -25,6 +25,8 @@ class SerialTester:
 
         self.port_combobox = ttk.Combobox(root, values=self.get_serial_ports())
         self.port_combobox.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+        # 默认选择串口列表中的第一个
+        self.port_combobox.current(0)
 
         self.baud_label = ttk.Label(root, text="波特率:")
         self.baud_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
@@ -33,7 +35,7 @@ class SerialTester:
             root, values=[9600, 19200, 38400, 57600, 115200]
         )
         self.baud_combobox.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
-        self.baud_combobox.set(9600)  # 默认设置为9600
+        self.baud_combobox.set(115200)  # 默认设置为115200
 
         self.refresh_button = ttk.Button(
             root, text="刷新串口", command=self.refresh_ports
@@ -85,6 +87,13 @@ class SerialTester:
         root.columnconfigure(0, weight=1)
         root.columnconfigure(1, weight=1)
         root.rowconfigure(4, weight=1)
+
+        self.data_refresh_button = ttk.Button(
+            root, text="刷新检测数据", command=self.clear_test_results
+        )
+        self.data_refresh_button.grid(
+            row=5, column=0, columnspan=2, padx=5, pady=5, sticky="ew"
+        )
 
     def get_serial_ports(self):
         ports = serial.tools.list_ports.comports()
@@ -157,6 +166,15 @@ class SerialTester:
         except json.JSONDecodeError:
             self.tree.set(item, column="测试结果", value="无效的响应")
             logging.error("无效的响应")
+
+    def bind_events(self):
+        self.tree.bind("<Double-1>", self.on_start_test)
+        self.root.bind("<Control-c>", self.clear_test_results)  # 绑定清除结果的按键事件
+
+    def clear_test_results(self):
+        # 清除测试结果列
+        for item in self.tree.get_children():
+            self.tree.set(item, column="测试结果", value="")
 
 
 if __name__ == "__main__":
