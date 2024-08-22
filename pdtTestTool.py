@@ -75,7 +75,8 @@ class SerialTester:
                 "指令": {"pinMappingConfig": {"mapping": list(range(48))}},
             },
             {"序号": 7, "测试项目": "查询设备UID", "指令": {"PdtTest": "uid"}},
-            {"序号": 8, "测试项目": "退出生产测试模式", "指令": {"PdtTest": "exit"}},
+            {"序号": 8, "测试项目": "查询PinMap", "指令": {"PdtTest": "pinMap"}},
+            {"序号": 9, "测试项目": "退出生产测试模式", "指令": {"PdtTest": "exit"}},
         ]
 
         for case in self.test_cases:
